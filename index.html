@@ -3,20 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Beat Builder (Client-only)</title>
-  <link rel="stylesheet" href="www/style.css" />
+  <title>Beat Builder</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="top">
     <div>
       <h1>Beat Builder</h1>
-      <p class="sub">Client-only • Ordner wählen → Sounds links • Drag → Track • Steps in der Mitte</p>
+      <p class="sub">Sounds links ziehen → Track entsteht → Steps in der Mitte setzen</p>
     </div>
 
     <div class="controls">
-      <button id="btnPickFolder" class="btn primary">📁 Sounds-Ordner wählen</button>
-      <input id="folderInput" type="file" webkitdirectory multiple accept="audio/*" hidden />
-
       <button id="btnPlay" class="btn primary">▶ Play</button>
       <button id="btnStop" class="btn">■ Stop</button>
 
@@ -39,7 +36,7 @@
   </header>
 
   <main class="layout">
-    <!-- Links: Sounds -->
+    <!-- Links: Sound Browser -->
     <aside class="sidebar">
       <div class="panel">
         <div class="panel-head">
@@ -50,12 +47,7 @@
         <input id="soundSearch" class="search" placeholder="Suche..." />
         <div id="soundList" class="soundlist"></div>
 
-        <p class="hint">
-          Doppelklick = Preview • Drag & Drop nach rechts in “Drop Zone”.
-        </p>
-        <p class="hint small">
-          (Folder-Picker funktioniert zuverlässig in Chrome/Edge. Firefox kann je nach Version zicken.)
-        </p>
+        <p class="hint">Doppelklick = Preview • Drag & Drop in die Drop Zone rechts</p>
       </div>
     </aside>
 
@@ -66,6 +58,7 @@
           <h2>Sequencer</h2>
           <span class="small">Klick auf Zellen = an/aus</span>
         </div>
+
         <div id="sequencer"></div>
       </div>
     </section>
@@ -87,6 +80,6 @@
     </aside>
   </main>
 
-  <script src="www/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
