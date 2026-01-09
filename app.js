@@ -1,11 +1,12 @@
 
 const SOUNDS = [
-  "brtz.mp3",
-  "mc_villager.mp3",
-  "prrbmp.mp3",
-  "glass-shattering.mp3",
-  "rizzsound.mp3",
-  "VineBoom.mp3",
+  "fun/brtz.mp3",
+  "fun/mc_villager.mp3",
+  "fun/prrbmp.mp3",
+  "fun/glass-shattering.mp3",
+  "fun/rizzsound.mp3",
+  "fun/VineBoom.mp3",
+  "fun/piano-bass-calme.mp3"
 ];
 
 // ==============================
@@ -214,35 +215,55 @@ function updateTempoWhilePlaying() {
 // ==============================
 function renderSoundList() {
   const q = (elSoundSearch.value || "").toLowerCase().trim();
-  const list = q ? SOUNDS.filter(s => s.toLowerCase().includes(q)) : SOUNDS;
-
   elSoundList.innerHTML = "";
-  elSoundCount.textContent = String(list.length);
+  elSoundCount.textContent = String(SOUNDS.length);
 
-  for (const file of list) {
-    const item = document.createElement("div");
-    item.className = "sounditem";
-    item.draggable = true;
+  // Sounds nach Ordner gruppieren
+  const groups = {};
+  for (const path of SOUNDS) {
+    const [folder, file] = path.includes("/")
+      ? path.split("/", 2)
+      : ["Sounds", path];
 
-    item.innerHTML = `
-      <div class="soundname">${escapeHtml(file)}</div>
-      <div class="soundmeta">drag</div>
-    `;
+    if (!groups[folder]) groups[folder] = [];
+    groups[folder].push({ path, file });
+  }
 
-    item.addEventListener("dragstart", (e) => {
-      e.dataTransfer.setData("text/plain", file);
-      e.dataTransfer.effectAllowed = "copy";
-    });
+  for (const folder of Object.keys(groups).sort()) {
+    // Ordner-Header
+    const header = document.createElement("div");
+    header.textContent = folder.toUpperCase();
+    header.style.margin = "10px 4px 4px";
+    header.style.fontSize = "11px";
+    header.style.color = "var(--muted)";
+    elSoundList.appendChild(header);
 
-    // Doppelklick = Preview
-    item.addEventListener("dblclick", async () => {
-      await loadBuffer(file).catch(console.error);
-      playSample(file, 0.9);
-    });
+    for (const s of groups[folder]) {
+      if (q && !s.path.toLowerCase().includes(q)) continue;
 
-    elSoundList.appendChild(item);
+      const item = document.createElement("div");
+      item.className = "sounditem";
+      item.draggable = true;
+
+      item.innerHTML = `
+        <div class="soundname">${escapeHtml(s.file)}</div>
+        <div class="soundmeta">${escapeHtml(folder)}</div>
+      `;
+
+      item.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", s.path);
+      });
+
+      item.addEventListener("dblclick", async () => {
+        await loadBuffer(s.path).catch(console.error);
+        playSample(s.path, 0.9);
+      });
+
+      elSoundList.appendChild(item);
+    }
   }
 }
+
 
 function renderTracksPanel() {
   elTrackList.innerHTML = "";

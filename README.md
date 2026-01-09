@@ -15,6 +15,13 @@ Is a Websiite to create beats with Minecraft Sounds.
 **9.01.2026**  
 - Erste Version mit Grundfunktionen
 
+## V1.1       
+**9.01.2026**  
+- footer hinzugefügt
+- inport export funktion hinzugefügt
+-
+
+
 
 ### Geplante Erweiterungen / Verbesserungen
 - Export import funktion
@@ -22,7 +29,8 @@ Is a Websiite to create beats with Minecraft Sounds.
 - eigene sounds upload
 - about site
 - mehr steps
-- footer
+- mehr sounds
+
 
 
 
