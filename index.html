@@ -1,13 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/www/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beat Builder (Client-only)</title>
+  <link rel="stylesheet" href="www/style.css" />
 </head>
 <body>
-    
-    <skript src="/www/main.js"></skript>
+  <header class="top">
+    <div>
+      <h1>Beat Builder</h1>
+      <p class="sub">Client-only • Ordner wählen → Sounds links • Drag → Track • Steps in der Mitte</p>
+    </div>
+
+    <div class="controls">
+      <button id="btnPickFolder" class="btn primary">📁 Sounds-Ordner wählen</button>
+      <input id="folderInput" type="file" webkitdirectory multiple accept="audio/*" hidden />
+
+      <button id="btnPlay" class="btn primary">▶ Play</button>
+      <button id="btnStop" class="btn">■ Stop</button>
+
+      <label class="field">
+        <span>BPM</span>
+        <input id="bpm" type="number" min="40" max="240" value="120" />
+      </label>
+
+      <label class="field">
+        <span>Steps</span>
+        <select id="steps">
+          <option value="8">8</option>
+          <option value="16" selected>16</option>
+          <option value="32">32</option>
+        </select>
+      </label>
+
+      <button id="btnClear" class="btn danger">Clear</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Links: Sounds -->
+    <aside class="sidebar">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Sounds</h2>
+          <span id="soundCount" class="small">0</span>
+        </div>
+
+        <input id="soundSearch" class="search" placeholder="Suche..." />
+        <div id="soundList" class="soundlist"></div>
+
+        <p class="hint">
+          Doppelklick = Preview • Drag & Drop nach rechts in “Drop Zone”.
+        </p>
+        <p class="hint small">
+          (Folder-Picker funktioniert zuverlässig in Chrome/Edge. Firefox kann je nach Version zicken.)
+        </p>
+      </div>
+    </aside>
+
+    <!-- Mitte: Sequencer -->
+    <section class="center">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Sequencer</h2>
+          <span class="small">Klick auf Zellen = an/aus</span>
+        </div>
+        <div id="sequencer"></div>
+      </div>
+    </section>
+
+    <!-- Rechts: Tracks -->
+    <aside class="sidebar">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Tracks</h2>
+        </div>
+
+        <div id="dropZone" class="dropzone">
+          Drop Zone<br />
+          <span class="small">Sound hier ablegen</span>
+        </div>
+
+        <div id="trackList"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="www/app.js"></script>
 </body>
 </html>
