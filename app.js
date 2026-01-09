@@ -6,6 +6,9 @@ const SOUNDS = [
   "brtz.mp3",
   "mc_villager.mp3",
   "prrbmp3.mp3",
+  "glass-shattering-461637.mp3",
+  "rizzsound.mp3",
+  "VineBoom.mp3",
 ];
 
 // ==============================
