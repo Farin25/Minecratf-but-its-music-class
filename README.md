@@ -3,6 +3,30 @@
 Is a Websiite to create beats with Minecraft Sounds.
 
 
+
+
+
+
+
+
+### Changelog
+
+## V1.1       
+**9.01.2026**  
+- Erste Version mit Grundfunktionen
+
+
+### Geplante Erweiterungen / Verbesserungen
+- Export import funktion
+- Sound kategorien und ordner
+- eigene sounds upload
+- about site
+- mehr steps
+- footer
+
+
+
+
 **Alle verwendeten Sounds stammen von **Pixabay** und sind unter der **Pixabay Content License** frei nutzbar.**
 
 Die Sounds dürfen kostenlos verwendet, verändert und in eigenen Projekten eingesetzt werden

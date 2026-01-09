@@ -1,15 +1,8 @@
-// ==============================
-// KONFIG: Sounds manuell eintragen
-// (müssen im Ordner /sounds liegen)
-// ==============================
+
 const SOUNDS = [
   "brtz.mp3",
   "mc_villager.mp3",
-<<<<<<< HEAD
   "prrbmp.mp3",
-=======
-  "prrbmp3.mp3",
->>>>>>> 674795acfcf3f6545b5dc7a0f606a3afbdf81a10
   "glass-shattering.mp3",
   "rizzsound.mp3",
   "VineBoom.mp3",
@@ -42,6 +35,10 @@ const elSequencer = document.getElementById("sequencer");
 const btnPlay = document.getElementById("btnPlay");
 const btnStop = document.getElementById("btnStop");
 const btnClear = document.getElementById("btnClear");
+
+const btnExport = document.getElementById("btnExport");
+const btnImport = document.getElementById("btnImport");
+const importFile = document.getElementById("importFile");
 
 const bpmInput = document.getElementById("bpm");
 const stepsSelect = document.getElementById("steps");
@@ -113,31 +110,41 @@ function playSample(file, vol = 1.0) {
 // ==============================
 // Tracks / Sequencer
 // ==============================
-async function addTrack(file) {
+async function addTrack(file, options = {}) {
   await loadBuffer(file);
 
   const id = uid();
-  const name = file.replace(/\.[^/.]+$/, "");
+  const name = (options.name ?? file.replace(/\.[^/.]+$/, ""));
 
   tracks.push({
     id,
     file,
     name,
-    volume: 0.9,
-    muted: false,
-    steps: makeEmptySteps(stepsCount),
+    volume: clamp01(options.volume ?? 0.9),
+    muted: !!options.muted,
+    steps: Array.isArray(options.steps) ? normalizeSteps(options.steps, stepsCount) : makeEmptySteps(stepsCount),
   });
 
   renderAll();
+}
+
+function clamp01(x) {
+  const n = Number(x);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(1, n));
+}
+
+function normalizeSteps(arr, n) {
+  const out = makeEmptySteps(n);
+  for (let i = 0; i < Math.min(arr.length, n); i++) out[i] = arr[i] ? 1 : 0;
+  return out;
 }
 
 function setStepsCount(n) {
   stepsCount = n;
 
   for (const t of tracks) {
-    const ns = makeEmptySteps(stepsCount);
-    for (let i = 0; i < Math.min(t.steps.length, stepsCount); i++) ns[i] = t.steps[i] ? 1 : 0;
-    t.steps = ns;
+    t.steps = normalizeSteps(t.steps, stepsCount);
   }
 
   stop(true);
@@ -284,7 +291,7 @@ function renderTracksPanel() {
     });
 
     vol.addEventListener("input", (e) => {
-      t.volume = Number(e.target.value);
+      t.volume = clamp01(e.target.value);
     });
 
     elTrackList.appendChild(card);
@@ -321,7 +328,6 @@ function renderSequencer() {
       cell.className = "step" + (t.steps[i] ? " on" : "");
       cell.dataset.step = String(i);
 
-      // optischer Takttrenner
       if (stepsCount >= 16 && i % 4 === 0) cell.style.borderColor = "rgba(255,255,255,0.18)";
 
       cell.addEventListener("click", () => {
@@ -369,6 +375,107 @@ elDropZone.addEventListener("drop", async (e) => {
   if (!SOUNDS.includes(file)) return;
 
   await addTrack(file).catch(console.error);
+});
+
+// ==============================
+// Import / Export
+// ==============================
+function buildExportObject() {
+  return {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    bpm: Number(bpmInput.value) || 120,
+    stepsCount,
+    tracks: tracks.map(t => ({
+      file: t.file,
+      name: t.name,
+      volume: t.volume,
+      muted: t.muted,
+      steps: t.steps.map(x => (x ? 1 : 0)),
+    })),
+  };
+}
+
+function downloadJson(obj, filename = "beat.json") {
+  const json = JSON.stringify(obj, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+async function importFromObject(data) {
+  // basic validation
+  if (!data || typeof data !== "object") throw new Error("Ungültige Datei (kein Objekt).");
+
+  const nextSteps = Number(data.stepsCount);
+  if (![8, 16, 32].includes(nextSteps)) throw new Error("Ungültige stepsCount (erlaubt: 8/16/32).");
+
+  const nextBpm = Number(data.bpm);
+  if (!Number.isFinite(nextBpm) || nextBpm < 40 || nextBpm > 240) throw new Error("Ungültige BPM.");
+
+  if (!Array.isArray(data.tracks)) throw new Error("Ungültige Tracks.");
+
+  // stop playback before changing everything
+  stop(true);
+
+  // apply settings
+  bpmInput.value = String(Math.round(nextBpm));
+  stepsSelect.value = String(nextSteps);
+  stepsCount = nextSteps;
+
+  // build tracks (nur erlaubte Sounds!)
+  const importedTracks = [];
+  for (const tr of data.tracks) {
+    if (!tr || typeof tr !== "object") continue;
+    if (!SOUNDS.includes(tr.file)) continue; // wichtig: nur server-sounds
+
+    importedTracks.push({
+      id: uid(),
+      file: tr.file,
+      name: String(tr.name ?? tr.file.replace(/\.[^/.]+$/, "")),
+      volume: clamp01(tr.volume ?? 0.9),
+      muted: !!tr.muted,
+      steps: normalizeSteps(Array.isArray(tr.steps) ? tr.steps : [], stepsCount),
+    });
+  }
+
+  tracks = importedTracks;
+
+  // preload used buffers (optional, verhindert erstes Lag)
+  await Promise.all(tracks.map(t => loadBuffer(t.file).catch(() => null)));
+
+  renderAll();
+}
+
+btnExport.addEventListener("click", () => {
+  const obj = buildExportObject();
+  const safeDate = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+  downloadJson(obj, `beat-${safeDate}.json`);
+});
+
+btnImport.addEventListener("click", () => importFile.click());
+
+importFile.addEventListener("change", async (e) => {
+  const file = e.target.files?.[0];
+  e.target.value = ""; // reset, damit gleicher file nochmal geht
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    await importFromObject(data);
+  } catch (err) {
+    console.error(err);
+    alert("Import fehlgeschlagen: " + (err?.message || err));
+  }
 });
 
 // ==============================
