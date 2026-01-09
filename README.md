@@ -1,5 +1,4 @@
 # Minecraft but its music
-
 Is a Websiite to create beats with Minecraft Sounds.
 
 
@@ -15,11 +14,11 @@ Is a Websiite to create beats with Minecraft Sounds.
 **9.01.2026**  
 - Erste Version mit Grundfunktionen
 
-## V1.1       
+## V1.2      
 **9.01.2026**  
 - footer hinzugefügt
 - inport export funktion hinzugefügt
--
+- Sound Oedner / Kategorien hinzufefügt 
 
 
 
@@ -33,12 +32,9 @@ Is a Websiite to create beats with Minecraft Sounds.
 
 
 
+**Alle Sounds mit:"sm" im Namen sind Selbstgemacht und stehen ebenfalls unter der MIT License.**
 
-
-**Alle verwendeten Sounds stammen von **Pixabay** und sind unter der **Pixabay Content License** frei nutzbar.**
-
-Die Sounds dürfen kostenlos verwendet, verändert und in eigenen Projekten eingesetzt werden
-(auch kommerziell), ohne Namensnennungspflicht.
+**verwendete Sounds von **Pixabay** und sind unter der **Pixabay Content License** frei nutzbar.**
 
 ### Quellen / Links
 - https://pixabay.com/

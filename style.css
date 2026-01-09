@@ -230,3 +230,78 @@ h2{ margin:0; font-size:16px; }
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+
+/* Einklappbare Ordner in der Soundliste */
+.sound-folder{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 10px;
+  margin-top:10px;
+  border-radius:12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor:pointer;
+  user-select:none;
+}
+.sound-folder:hover{
+  background: rgba(255,255,255,0.07);
+}
+.sound-folder .left{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+.sound-folder .title{
+  font-size:11px;
+  letter-spacing:0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
+}
+.sound-folder .count{
+  font-size:11px;
+  color: var(--muted);
+  opacity:0.9;
+}
+.sound-folder .chev{
+  font-size:12px;
+  color: var(--muted);
+  transform: rotate(0deg);
+  transition: transform 120ms ease;
+}
+.sound-folder.closed .chev{
+  transform: rotate(-90deg);
+}
+
+.sound-group{
+  margin-top:6px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.sound-group.hidden{
+  display:none;
+}
+
+.source {
+  color: violet;
+}
+.source a {
+  color: violet;
+  text-decoration: none;
+}
+.source a:hover {
+  text-decoration: underline;
+}
+
+
+.versioninfo {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--muted);
+}

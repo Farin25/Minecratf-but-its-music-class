@@ -217,31 +217,81 @@ function updateTempoWhilePlaying() {
 function renderSoundList() {
   const q = (elSoundSearch.value || "").toLowerCase().trim();
   elSoundList.innerHTML = "";
-  elSoundCount.textContent = String(SOUNDS.length);
 
-  // Sounds nach Ordner gruppieren
+  // groups: folder -> [{ path, file }]
   const groups = {};
   for (const path of SOUNDS) {
-    const [folder, file] = path.includes("/")
-      ? path.split("/", 2)
-      : ["Sounds", path];
-
+    const parts = path.split("/");
+    const file = parts.pop();
+    const folder = parts.length ? parts.join("/") : "Sounds";
     if (!groups[folder]) groups[folder] = [];
     groups[folder].push({ path, file });
   }
 
-  for (const folder of Object.keys(groups).sort()) {
-    // Ordner-Header
+  const folders = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+
+  // state (eingeklappt/ausgeklappt) aus localStorage
+  const stateKey = "bb_folder_state_v1";
+  let folderState = {};
+  try {
+    folderState = JSON.parse(localStorage.getItem(stateKey) || "{}");
+  } catch {
+    folderState = {};
+  }
+
+  // Wenn gesucht wird, automatisch alle Ordner öffnen (bessere UX)
+  const forceOpen = q.length > 0;
+
+  let totalVisible = 0;
+
+  for (const folder of folders) {
+    const items = groups[folder]
+      .slice()
+      .sort((a, b) => a.file.localeCompare(b.file));
+
+    // Filter für Suche
+    const filtered = q
+      ? items.filter(it => (it.path.toLowerCase().includes(q) || it.file.toLowerCase().includes(q)))
+      : items;
+
+    if (q && filtered.length === 0) continue;
+
+    totalVisible += filtered.length;
+
+    // Header
     const header = document.createElement("div");
-    header.textContent = folder.toUpperCase();
-    header.style.margin = "10px 4px 4px";
-    header.style.fontSize = "11px";
-    header.style.color = "var(--muted)";
-    elSoundList.appendChild(header);
+    header.className = "sound-folder";
 
-    for (const s of groups[folder]) {
-      if (q && !s.path.toLowerCase().includes(q)) continue;
+    const isClosed = !forceOpen && folderState[folder] === true; // true = closed
+    if (isClosed) header.classList.add("closed");
 
+    header.innerHTML = `
+      <div class="left">
+        <span class="chev">▾</span>
+        <span class="title">${escapeHtml(folder)}</span>
+      </div>
+      <span class="count">${filtered.length}</span>
+    `;
+
+    // Group container
+    const group = document.createElement("div");
+    group.className = "sound-group" + (isClosed ? " hidden" : "");
+
+    // Toggle
+    header.addEventListener("click", () => {
+      const nowHidden = !group.classList.contains("hidden") ? true : false;
+
+      group.classList.toggle("hidden", nowHidden);
+      header.classList.toggle("closed", nowHidden);
+
+      folderState[folder] = nowHidden; // merken
+      try {
+        localStorage.setItem(stateKey, JSON.stringify(folderState));
+      } catch {}
+    });
+
+    // Items
+    for (const s of filtered) {
       const item = document.createElement("div");
       item.className = "sounditem";
       item.draggable = true;
@@ -251,8 +301,9 @@ function renderSoundList() {
         <div class="soundmeta">${escapeHtml(folder)}</div>
       `;
 
-      item.addEventListener("dragstart", e => {
+      item.addEventListener("dragstart", (e) => {
         e.dataTransfer.setData("text/plain", s.path);
+        e.dataTransfer.effectAllowed = "copy";
       });
 
       item.addEventListener("dblclick", async () => {
@@ -260,10 +311,17 @@ function renderSoundList() {
         playSample(s.path, 0.9);
       });
 
-      elSoundList.appendChild(item);
+      group.appendChild(item);
     }
+
+    elSoundList.appendChild(header);
+    elSoundList.appendChild(group);
   }
+
+  // Count oben rechts
+  elSoundCount.textContent = String(q ? totalVisible : SOUNDS.length);
 }
+
 
 
 function renderTracksPanel() {
