@@ -6,7 +6,8 @@ const SOUNDS = [
   "fun/glass-shattering.mp3",
   "fun/rizzsound.mp3",
   "fun/VineBoom.mp3",
-  "fun/piano-bass-calme.mp3"
+  "fun/piano-bass-calme.mp3",
+  "Animals/dog1.mp3",
 ];
 
 // ==============================
