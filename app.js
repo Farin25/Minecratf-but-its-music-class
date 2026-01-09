@@ -5,7 +5,11 @@
 const SOUNDS = [
   "brtz.mp3",
   "mc_villager.mp3",
+<<<<<<< HEAD
   "prrbmp.mp3",
+=======
+  "prrbmp3.mp3",
+>>>>>>> 674795acfcf3f6545b5dc7a0f606a3afbdf81a10
   "glass-shattering.mp3",
   "rizzsound.mp3",
   "VineBoom.mp3",
