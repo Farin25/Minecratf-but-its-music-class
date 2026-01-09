@@ -15,5 +15,5 @@ Die Sounds dürfen kostenlos verwendet, verändert und in eigenen Projekten eing
 
 
 
-#### Copyright (C) 2025 of Liam and Farin 
+### Copyright (C) 2025 of Liam and Farin 
  - Distributed under the terms of the GNU General Public License v3.0
