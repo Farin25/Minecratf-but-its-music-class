@@ -43,5 +43,5 @@ Is a Websiite to create beats with Minecraft Sounds.
  - Sound Effect by <a href="https://pixabay.com/de/users/mollyroselee-9214707/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=423641">Mollyroselee</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=423641">Pixabay</a>
 
 
-### Copyright (C) 2025 of Liam and Farin 
- - Distributed under the terms of the GNU General Public License v3.0
+### Copyright (C) 2026 of Liam and Farin 
+ - Distributed under the terms of the MIT License.
