@@ -8,6 +8,9 @@ const SOUNDS = [
   "fun/VineBoom.mp3",
   "fun/piano-bass-calme.mp3",
   "Animals/dog1.mp3",
+  "Animals/Pixel_sf.mp3",
+  "Makerspace/screwdriver_sf.mp3",
+  "Makerspace/saw_sf.mp3"
 ];
 
 // ==============================
